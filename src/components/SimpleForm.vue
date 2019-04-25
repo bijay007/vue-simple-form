@@ -3,25 +3,24 @@
     <h1>{{ msg }}</h1>
     <form
       id={form}
-      @submit="validateForm"
-      action='https://reqres.in/api/users'
-      method='post'
+      ref='user_form'
+      @submit.prevent='submitForm'
     >
       <div class='form_wrapper'>
         <div class='form_main'>
           <div class='form_input'>
             <span>Name: </span>
-            <input v-model='name' placeholder='Your name'>
+            <input required v-model='name' placeholder='Your name'>
           </div>
           <div class='form_input'>
             <span>Age: </span>
-            <input v-mode='age' placeholder='Your age' type='number'>
+            <input v-model.number='age' placeholder='Your age' type='number'>
           </div>
           <div class='form_select'>
-            <p>Interest: 
+            <p>Job: 
               <span>
-                <select v-model='interest'>
-                  <option disabled value=''> Select your interest</option>
+                <select required v-model='job'>
+                  <option disabled value=''> Select your job</option>
                   <option>FrontEnd Development</option>
                   <option>BackEnd Development</option>
                   <option>FullStack Development</option>
@@ -41,7 +40,23 @@
           </div>
           <div class='form_buttons'>
             <button type='submit'><span>Submit</span></button>
-            <button type='button'><span>Clear</span></button>
+            <button type='button' @click='clearForm'><span>Clear</span></button>
+          </div>
+          <div class='form_results'>
+            <div v-if='lastAddedUser.body'>
+              <div class='user_info'>
+                <h4>Last added user info:</h4>
+                <div class='user_info_field'>UserName: <span>{{lastAddedUser.title}}</span></div>
+                <div class='user_info_field'>Age: <span>{{lastAddedUser.userId}}</span></div>
+                <div class='user_info_field'>Job: <span>{{lastAddedUser.body}}</span></div>
+                <div class='user_info_field'>Remote preference: 
+                  <span>{{this.travel ? this.travel : 'No preference'}}</span>
+                </div>
+              </div>
+            </div>
+            <div v-else>
+              No new user added.
+            </div>
           </div>
         </div>
       </div>
@@ -50,6 +65,7 @@
 </template>
 
 <script>
+import { setTimeout } from 'timers';
 export default {
   name: 'SimpleForm',
   props: {
@@ -59,9 +75,32 @@ export default {
     return {
       name: '',
       age: '',
-      interest: '',
+      job: '',
       travel: '',
-      validateForm: () => 2
+      lastAddedUser: {}
+    }
+  },
+  methods: {
+    submitForm: function() {
+       let formData = {
+        method: 'post',
+        body: JSON.stringify({
+          title: this.name,
+          userId: this.age,
+          body: this.job
+        }),
+        headers:{'Content-Type': 'application/json'}
+      }
+      fetch('https://jsonplaceholder.typicode.com/posts', formData)
+        .then(response => response.json())
+        .then(json => this.lastAddedUser = Object.assign({}, json))
+        .then(this.startDataRefresh)
+    },
+    clearForm: function() {
+      this.$refs.user_form.reset();
+    },
+    startDataRefresh: function() {
+      setTimeout(() => this.lastAddedUser = {}, 3000)
     }
   }
 }
@@ -86,6 +125,23 @@ export default {
   width: 100%;
   justify-content: space-between;
   padding: 0.5rem;
+}
+.form_results {
+  padding-top: 1rem;
+}
+.user_info {
+  border: 1px solid red;
+  border-radius: 0.5rem;
+}
+.user_info_field {
+  text-align: left;
+  padding: 0.3rem 1rem;
+}
+.user_info_field span {
+  font-weight: bold;
+}
+h4 {
+  text-decoration: underline;
 }
 input {
   padding: 0.2rem;
