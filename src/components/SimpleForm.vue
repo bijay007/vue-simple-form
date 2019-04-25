@@ -43,6 +43,7 @@
             <button type='button' @click='clearForm'><span>Clear</span></button>
           </div>
           <div class='form_results'>
+            <PulseLoader :loading='loading'></PulseLoader>
             <div v-if='lastAddedUser.body'>
               <div class='user_info'>
                 <h4>Last added user info:</h4>
@@ -66,10 +67,15 @@
 
 <script>
 import { setTimeout } from 'timers';
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
+
 export default {
   name: 'SimpleForm',
   props: {
     msg: String
+  },
+  components: {
+    PulseLoader
   },
   data: function() {
     return {
@@ -77,6 +83,7 @@ export default {
       age: '',
       job: '',
       travel: '',
+      loading: false,
       lastAddedUser: {}
     }
   },
@@ -91,6 +98,7 @@ export default {
         }),
         headers:{'Content-Type': 'application/json'}
       }
+      this.loading = true;
       fetch('https://jsonplaceholder.typicode.com/posts', formData)
         .then(response => response.json())
         .then(json => this.lastAddedUser = Object.assign({}, json))
@@ -100,6 +108,7 @@ export default {
       this.$refs.user_form.reset();
     },
     startDataRefresh: function() {
+      this.loading = false;
       setTimeout(() => this.lastAddedUser = {}, 3000)
     }
   }
