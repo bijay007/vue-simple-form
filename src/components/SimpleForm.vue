@@ -1,5 +1,6 @@
 <template>
-  <div class="simple_form">
+  <div class="form_root">
+    <img alt="Vue logo" src="../assets/logo.png">
     <h1>{{ msg }}</h1>
     <form
       id={form}
@@ -9,15 +10,15 @@
       <div class='form_wrapper'>
         <div class='form_main'>
           <div class='form_input'>
-            <span>Name: </span>
+            <span>&ast; Name: </span>
             <input required v-model='name' placeholder='Your name'>
           </div>
           <div class='form_input'>
-            <span>Age: </span>
-            <input v-model.number='age' placeholder='Your age' type='number'>
+            <span>&ast; Age: </span>
+            <input required v-model.number='age' placeholder='Your age' type='number'>
           </div>
           <div class='form_select'>
-            <p>Job: 
+            <p>&ast; Job: 
               <span>
                 <select required v-model='job'>
                   <option disabled value=''> Select your job</option>
@@ -43,20 +44,25 @@
             <button type='button' @click='clearForm'><span>Clear</span></button>
           </div>
           <div class='form_results'>
-            <PulseLoader :loading='loading'></PulseLoader>
-            <div v-if='lastAddedUser.body'>
-              <div class='user_info'>
-                <h4>Last added user info:</h4>
-                <div class='user_info_field'>UserName: <span>{{lastAddedUser.title}}</span></div>
-                <div class='user_info_field'>Age: <span>{{lastAddedUser.userId}}</span></div>
-                <div class='user_info_field'>Job: <span>{{lastAddedUser.body}}</span></div>
-                <div class='user_info_field'>Remote preference: 
-                  <span>{{this.travel ? this.travel : 'No preference'}}</span>
+            <div>
+              <PulseLoader :loading='loading'></PulseLoader>
+              <div v-if='lastAddedUser.body'>
+                <div class='user_info'>
+                  <h4>Last added user info:</h4>
+                  <div class='user_info_field'>UserName: <span>{{lastAddedUser.title}}</span></div>
+                  <div class='user_info_field'>Age: <span>{{lastAddedUser.userId}}</span></div>
+                  <div class='user_info_field'>Job: <span>{{lastAddedUser.body}}</span></div>
+                  <div class='user_info_field'>Remote preference: 
+                    <span>{{this.travel ? this.travel : 'No preference'}}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div v-else>
-              No new user added.
+              <div v-else>
+                <span>No new user added 😓</span>
+              </div>
+              <div v-if='usersList.length' class='users_list'>
+                OR <router-link :to="{name: 'Users', params: { usersList }}">Check users list</router-link>
+              </div>
             </div>
           </div>
         </div>
@@ -84,7 +90,8 @@ export default {
       job: '',
       travel: '',
       loading: false,
-      lastAddedUser: {}
+      lastAddedUser: {},
+      usersList: []
     }
   },
   methods: {
@@ -107,8 +114,9 @@ export default {
     clearForm: function() {
       this.$refs.user_form.reset();
     },
-    startDataRefresh: function() {
+    startDataRefresh: function(json) {
       this.loading = false;
+      this.usersList.push(json);
       setTimeout(() => this.lastAddedUser = {}, 3000)
     }
   }
@@ -117,6 +125,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.form_root {
+  padding: 2rem auto;
+}
 .form_wrapper {
   display: flex;
   justify-content: center;
@@ -137,9 +148,11 @@ export default {
 }
 .form_results {
   padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
 }
 .user_info {
-  border: 1px solid red;
+  border: 1px solid #41b883;
   border-radius: 0.5rem;
 }
 .user_info_field {
@@ -148,6 +161,9 @@ export default {
 }
 .user_info_field span {
   font-weight: bold;
+}
+.users_list {
+  padding: 2rem 0;
 }
 h4 {
   text-decoration: underline;
