@@ -168,6 +168,9 @@ export default {
 .users_list {
   padding: 2rem 0;
 }
+img {
+  height: 20vh;
+}
 h4 {
   text-decoration: underline;
 }
