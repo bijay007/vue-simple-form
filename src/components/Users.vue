@@ -4,26 +4,27 @@
       <div class='menu_content'>
         <router-link :to="{name: 'Home'}"> 🏠 </router-link>
         <div style='padding: 1rem 0'>
-          <input type="text" placeholder="Search for a user" autofocus>
+          <input type="text" v-model='keyword' placeholder="🔍 Search for a user"
+            autofocus>
         </div>
       </div>
     </div>
-    <h2>Remote users</h2>
+    <h2>Users found 👇</h2>
     <div v-if='remoteUsers.length' class='users'>
       <div class='user_list' v-for="(user, index) in remoteUsers" v-bind:key="index+user.email">
         <div>{{user.name}}</div>
       </div>
     </div>
-    <h2 v-if='newUser.title || localUsers.length'>New users</h2>
+    <h2 v-if='newUser.name || localUsers.length'>New users</h2>
     <div class='users'>
       <div v-if='localUsers.length' @click.once='modifyLocalStorage({}, $event)'>
-        <div class='user_list local_users' v-for='(user, index) in localUsers' :key='user.title+index' :hellofromtheothersidee='user.title'>
-          <div>{{user.title}}</div>
+        <div class='user_list local_users' v-for='(user, index) in localUsers' :key='user.name+index' :hellofromtheothersidee='user.name'>
+          <div>{{user.name}}</div>
           <div class='user_list_actions'>❌</div>
         </div>
       </div>
-      <div v-if="newUser.title" class='user_list local_users'>
-        <div style='color: #ff6666'>{{getUpperCase(newUser.title)}}</div>
+      <div v-if="newUser.name" class='user_list local_users'>
+        <div style='color: #ff6666'>{{getUpperCase(newUser.name)}}</div>
         <div class='user_list_actions' @click.once='modifyLocalStorage(newUser, $event)'>💾</div>
       </div>
       </div>
@@ -45,6 +46,7 @@ export default {
   },
   data() {
     return {
+      keyword: '',
       newUser: {...this.recentUser} || {},
       remoteUsers: [],
       localUsers: []
@@ -60,8 +62,8 @@ export default {
       this.remoteUsers = result;
     },
     saveToLocalStorage(user) {
-      localStorage.setItem(`User:${user.title}`, JSON.stringify(user))
-      let recentSaved = JSON.parse(localStorage.getItem(`User:${user.title}`))
+      localStorage.setItem(`User:${user.name}`, JSON.stringify(user))
+      let recentSaved = JSON.parse(localStorage.getItem(`User:${user.name}`))
       this.localUsers.push(recentSaved);
       this.newUser = {}
     },
@@ -75,7 +77,7 @@ export default {
       this.localUsers = savedUsers.map(user => JSON.parse(user))
     },
     modifyLocalStorage(data, e) {
-      if (data.title) {
+      if (data.name) {
         this.saveToLocalStorage(data)
       } else {
         // only do this (see below) if the list is supeeer big for optimization (the one below is just for testing purpose)

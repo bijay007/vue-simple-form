@@ -49,7 +49,7 @@
               <div v-if='newUser.body'>
                 <div class='user_info'>
                   <h4>Last added user info:</h4>
-                  <div class='user_info_field'>UserName: <span>{{newUser.title}}</span></div>
+                  <div class='user_info_field'>UserName: <span>{{newUser.name}}</span></div>
                   <div class='user_info_field'>Age: <span>{{newUser.userId}}</span></div>
                   <div class='user_info_field'>Job: <span>{{newUser.body}}</span></div>
                   <div class='user_info_field'>Remote preference: 
@@ -99,7 +99,7 @@ export default {
        let formData = {
         method: 'post',
         body: JSON.stringify({
-          title: this.name,
+          name: this.name,
           userId: this.age,
           body: this.job
         }),
