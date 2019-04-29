@@ -9,15 +9,15 @@
     </div>
     <h2 v-if='newUser.title || localUsers.length'>New users</h2>
     <div class='users'>
-      <div v-if='localUsers.length'>
-        <div class='user_list local_users' v-for='(user, index) in localUsers' v-bind:key='user.title+index'>
+      <div v-if='localUsers.length' @click.once='modifyLocalStorage({}, $event)'>
+        <div class='user_list local_users' v-for='(user, index) in localUsers' :key='user.title+index' :hellofromtheothersidee='user.title'>
           <div>{{user.title}}</div>
-          <div class='user_list_actions' @click='deleteFromLocalStorage(user)'>❌</div>
+          <div class='user_list_actions'>❌</div>
         </div>
       </div>
       <div v-if="newUser.title" class='user_list local_users'>
         <div style='color: #ff6666'>{{getUpperCase(newUser.title)}}</div>
-        <div class='user_list_actions' @click='saveToLocalStorage(newUser)'>💾</div>
+        <div class='user_list_actions' @click.once='modifyLocalStorage(newUser, $event)'>💾</div>
       </div>
       </div>
     </div>
@@ -67,10 +67,18 @@ export default {
       }, []);
       this.localUsers = savedUsers.map(user => JSON.parse(user))
     },
-    deleteFromLocalStorage(user) {
-      localStorage.removeItem(`User:${user.title}`)
-      // Better to search and slice off from array if the list is big 
-      this.getFromLocalStorage()
+    modifyLocalStorage(data, e) {
+      if (data.title) {
+        this.saveToLocalStorage(data)
+      } else {
+        // only do this (see below) if the list is supeeer big for optimization (the one below is just for testing purpose)
+        // attaching event to every iterated node (similar to saving user) and passing the whole object is less prone to error and...
+        //...easy to do operations with the target element's data than searching and parsing the targeted node's inner content
+        let getFirstChildText = e.target.parentElement.firstChild.innerHTML
+        localStorage.removeItem(`User:${getFirstChildText}`)
+        // Better to search and slice off from array if the list is big rather than calling the function to update as it can be expensive
+        this.getFromLocalStorage()
+      }
     }
   }
 }
