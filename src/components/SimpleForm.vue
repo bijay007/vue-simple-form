@@ -46,12 +46,12 @@
           <div class='form_results'>
             <div>
               <PulseLoader :loading='loading'></PulseLoader>
-              <div v-if='lastAddedUser.body'>
+              <div v-if='newUser.body'>
                 <div class='user_info'>
                   <h4>Last added user info:</h4>
-                  <div class='user_info_field'>UserName: <span>{{lastAddedUser.title}}</span></div>
-                  <div class='user_info_field'>Age: <span>{{lastAddedUser.userId}}</span></div>
-                  <div class='user_info_field'>Job: <span>{{lastAddedUser.body}}</span></div>
+                  <div class='user_info_field'>UserName: <span>{{newUser.title}}</span></div>
+                  <div class='user_info_field'>Age: <span>{{newUser.userId}}</span></div>
+                  <div class='user_info_field'>Job: <span>{{newUser.body}}</span></div>
                   <div class='user_info_field'>Remote preference: 
                     <span>{{this.travel ? this.travel : 'No preference'}}</span>
                   </div>
@@ -61,7 +61,7 @@
                 <span>No new user added 😓</span>
               </div>
               <div class='users_list'>
-                OR <router-link :to="{name: 'Users', params: { usersList }}">Check users list</router-link>
+                OR <router-link :to="{name: 'Users', params: { recentUser }}">Check users list</router-link>
               </div>
             </div>
           </div>
@@ -90,8 +90,8 @@ export default {
       job: '',
       travel: '',
       loading: false,
-      lastAddedUser: {},
-      usersList: []
+      newUser: {},
+      recentUser: {}
     }
   },
   methods: {
@@ -108,16 +108,19 @@ export default {
       this.loading = true;
       fetch('https://jsonplaceholder.typicode.com/posts', formData)
         .then(response => response.json())
-        .then(json => this.lastAddedUser = Object.assign({}, json))
+        .then(json => {
+          // Using assign so no null properties are spread over
+          this.newUser = Object.assign({}, json)
+          this.recentUser = Object.assign({}, json)
+        })
         .then(this.startDataRefresh)
     },
     clearForm: function() {
       this.$refs.user_form.reset();
     },
-    startDataRefresh: function(json) {
+    startDataRefresh: function() {
       this.loading = false;
-      this.usersList.push(json);
-      setTimeout(() => this.lastAddedUser = {}, 1500)
+      setTimeout(() => this.newUser = {}, 1500)
     }
   }
 }

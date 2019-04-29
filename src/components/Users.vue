@@ -7,7 +7,7 @@
         <div>{{user.name}}</div>
       </div>
     </div>
-    <h2 v-if='usersList.length || localUsers.length'>New users</h2>
+    <h2 v-if='newUser.title || localUsers.length'>New users</h2>
     <div class='users'>
       <div v-if='localUsers.length'>
         <div class='user_list local_users' v-for='(user, index) in localUsers' v-bind:key='user.title+index'>
@@ -15,23 +15,21 @@
           <div class='user_list_actions' @click='deleteFromLocalStorage(user)'>❌</div>
         </div>
       </div>
-      <div v-for="(user, index) in usersList" :key="index+user.title">
-        <div class='user_list local_users'>
-          <div style='color: #ff6666'>{{getUpperCase(user.title)}}</div>
-          <div class='user_list_actions' @click='saveToLocalStorage(user)'>💾</div>
-        </div>
+      <div v-if="newUser.title" class='user_list local_users'>
+        <div style='color: #ff6666'>{{getUpperCase(newUser.title)}}</div>
+        <div class='user_list_actions' @click='saveToLocalStorage(newUser)'>💾</div>
+      </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
 export default {
   name: 'users',
   props: {
-    usersList: {
-      type: Array,
-      default: () => []
+    recentUser: {
+      type: Object,
+      default: () => {}
     }
   },
   created: function() {
@@ -40,6 +38,7 @@ export default {
   },
   data() {
     return {
+      newUser: {...this.recentUser} || {},
       remoteUsers: [],
       localUsers: []
     }
@@ -55,6 +54,9 @@ export default {
     },
     saveToLocalStorage(user) {
       localStorage.setItem(`User:${user.title}`, JSON.stringify(user))
+      let recentSaved = JSON.parse(localStorage.getItem(`User:${user.title}`))
+      this.localUsers.push(recentSaved);
+      this.newUser = {}
     },
     getFromLocalStorage() {
       let savedUsers = Object.keys(localStorage).reduce((acc, prev) => {
@@ -67,6 +69,8 @@ export default {
     },
     deleteFromLocalStorage(user) {
       localStorage.removeItem(`User:${user.title}`)
+      // Better to search and slice off from array if the list is big 
+      this.getFromLocalStorage()
     }
   }
 }
