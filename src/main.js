@@ -14,6 +14,7 @@ const routes = [
     children: [
       {
         path: '/',
+        name: 'Home',
         component: SimpleForm
       }
     ]

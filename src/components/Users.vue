@@ -1,6 +1,13 @@
 <template>
   <div>
-    <input type="text" placeholder="Search for a user" autofocus>
+    <div class='menu'>
+      <div class='menu_content'>
+        <router-link :to="{name: 'Home'}"> 🏠 </router-link>
+        <div style='padding: 1rem 0'>
+          <input type="text" placeholder="Search for a user" autofocus>
+        </div>
+      </div>
+    </div>
     <h2>Remote users</h2>
     <div v-if='remoteUsers.length' class='users'>
       <div class='user_list' v-for="(user, index) in remoteUsers" v-bind:key="index+user.email">
@@ -84,9 +91,8 @@ export default {
 }
 </script>
 <style scoped>
-  .x {
+  .menu {
     display: flex;
-    flex-direction: column;
     justify-content: center;
   }
   span {

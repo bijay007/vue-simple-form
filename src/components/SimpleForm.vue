@@ -172,8 +172,11 @@ h4 {
   text-decoration: underline;
 }
 input {
-  padding: 0.2rem;
+  padding: 0.3rem;
   border: 0.5px solid rgba(65, 184, 131, 0.8);
+}
+select {
+  padding: 0.3rem;
 }
 label {
   font-weight: bold;
@@ -196,6 +199,9 @@ button:hover {
   border-radius: 50px;
   border-color: #494949;
   transition: all 0.3s ease 0s;
+}
+button:focus {
+  outline: none;
 }
 ul {
   list-style-type: none;
