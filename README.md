@@ -1,4 +1,4 @@
-# vue-simple-form
+# A simple vue form to add and modify job applicants
 
 ## Project setup
 ```
