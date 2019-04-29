@@ -60,7 +60,7 @@
               <div v-else>
                 <span>No new user added 😓</span>
               </div>
-              <div v-if='usersList.length' class='users_list'>
+              <div class='users_list'>
                 OR <router-link :to="{name: 'Users', params: { usersList }}">Check users list</router-link>
               </div>
             </div>
@@ -117,7 +117,7 @@ export default {
     startDataRefresh: function(json) {
       this.loading = false;
       this.usersList.push(json);
-      setTimeout(() => this.lastAddedUser = {}, 3000)
+      setTimeout(() => this.lastAddedUser = {}, 1500)
     }
   }
 }
