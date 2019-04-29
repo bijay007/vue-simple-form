@@ -114,6 +114,7 @@ export default {
     height: 1.5rem;
     width: 12rem;
     padding: 0.25rem;
+    font-size: 0.9rem;
   }
   .applicants {
     display: flex;

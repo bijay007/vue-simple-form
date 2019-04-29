@@ -21,7 +21,7 @@
             <p>&ast; Job: 
               <span>
                 <select required v-model='job'>
-                  <option disabled value=''> Select applicant job</option>
+                  <option disabled value=''>Select applicant job</option>
                   <option>FrontEnd Development</option>
                   <option>BackEnd Development</option>
                   <option>FullStack Development</option>
@@ -30,11 +30,11 @@
             </p>
           </div>
           <div class='form_radio'>
-            <p>Travel for work: 
+            <p>Travel for work:&nbsp;
               <span>
-                <label for='travel_yes'> Yes</label>
+                <label for='travel_yes'>Yes&nbsp;</label>
                 <input type='radio' id='travel_yes' value='Yes' v-model='travel'>
-                <label for='travel_no'> No</label>
+                <label for='travel_no'>No</label>
                 <input type='radio' id='travel_no' value='No' v-model='travel'>
               </span>
             </p>
