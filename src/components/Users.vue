@@ -1,23 +1,24 @@
 <template>
   <div>
     <input type="text" placeholder="Search for a user" autofocus>
-    <h2>Default users:</h2>
+    <h2>Remote users</h2>
     <div v-if='remoteUsers.length' class='users'>
-      <div class='users_list' v-for="(user, index) in remoteUsers" v-bind:key="index+user.email">
+      <div class='user_list' v-for="(user, index) in remoteUsers" v-bind:key="index+user.email">
         <div>{{user.name}}</div>
       </div>
     </div>
-    <h2 v-if='usersList.length || localUsers.length'>New users:</h2>
-    <div>
-      <div v-if='localUsers.length' class='users'>
-        <div class='users_list' v-for='user in localUsers' :key='user.name+user.userId'>
-          {{user.name}}
+    <h2 v-if='usersList.length || localUsers.length'>New users</h2>
+    <div class='users'>
+      <div v-if='localUsers.length'>
+        <div class='user_list local_users' v-for='(user, index) in localUsers' v-bind:key='user.title+index'>
+          <div>{{user.title}}</div>
+          <div class='user_list_actions' @click='deleteFromLocalStorage(user)'>❌</div>
         </div>
       </div>
-      <div class='users' v-for="(user, index) in usersList" v-bind:key="index+user.userId">
-        <div class='users_list new_users'>
-          <div class="new_users_info">{{getUpperCase(user.title)}}</div>
-          <span class='new_users_save' @click='saveToLocalStorage(user)'>💾</span>
+      <div v-for="(user, index) in usersList" :key="index+user.title">
+        <div class='user_list local_users'>
+          <div style='color: #ff6666'>{{getUpperCase(user.title)}}</div>
+          <div class='user_list_actions' @click='saveToLocalStorage(user)'>💾</div>
         </div>
       </div>
     </div>
@@ -56,16 +57,16 @@ export default {
       localStorage.setItem(`User:${user.title}`, JSON.stringify(user))
     },
     getFromLocalStorage() {
-      let data = Object.keys(localStorage).reduce((acc, prev) => {
+      let savedUsers = Object.keys(localStorage).reduce((acc, prev) => {
         if (/User:/.test(prev)) {
-          acc.push({ name: prev.replace('User:', '' )})
+          acc.push(localStorage.getItem(prev))
         }
         return acc;
       }, []);
-      this.localUsers = data.map(user => {
-        user.name = this.getUpperCase(user.name)
-        return user;
-      });
+      this.localUsers = savedUsers.map(user => JSON.parse(user))
+    },
+    deleteFromLocalStorage(user) {
+      localStorage.removeItem(`User:${user.title}`)
     }
   }
 }
@@ -93,19 +94,20 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
   }
-  .users_list {
-    padding: 0.2rem;
+  .user_list {
+    display: flex;
+    justify-content: flex-start;
+    width: 30vw;
+    padding: 0.25rem;
     font-weight: bold;
   }
-  .new_users {
+  .local_users {
     display: flex;
+    justify-content: space-between;
   }
-  .new_users_info {
-    padding-right: 2rem;
-    color: #ff6666;
-  }
-  .new_users_save {
+  .user_list_actions {
     cursor: pointer;
   }
 </style>
