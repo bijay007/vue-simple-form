@@ -3,29 +3,29 @@
     <div class='menu'>
       <div class='menu_content'>
         <router-link :to="{name: 'Home'}"> 🏠 </router-link>
-        <div style='padding: 1rem 0'>
-          <input type="text" v-model='keyword' placeholder="🔍 Search for a user"
+        <div style='padding: 1rem'>
+          <input type="text" v-model='keyword' placeholder='🔍 Search for a user'
             autofocus>
         </div>
       </div>
     </div>
     <h2>Users found 👇</h2>
-    <div v-if='remoteUsers.length' class='users'>
-      <div class='user_list' v-for="(user, index) in remoteUsers" v-bind:key="index+user.email">
+    <div v-show='filteredRemoteUsers.length' class='users'>
+      <div class='user_list' v-for='(user, index) in filteredRemoteUsers' v-bind:key='index+user.email'>
         <div>{{user.name}}</div>
       </div>
     </div>
-    <h2 v-if='newUser.name || localUsers.length'>New users</h2>
+    <h2 v-show='newUser.name || filteredLocalUsers.length'>New users</h2>
     <div class='users'>
-      <div v-if='localUsers.length' @click.once='modifyLocalStorage({}, $event)'>
-        <div class='user_list local_users' v-for='(user, index) in localUsers' :key='user.name+index' :hellofromtheothersidee='user.name'>
+      <div v-show='filteredLocalUsers.length' @click.once='modifyLocalStorage({}, $event)'>
+        <div class='user_list local_users' v-for='(user, index) in filteredLocalUsers' :key='user.name+index'>
           <div>{{user.name}}</div>
-          <div class='user_list_actions'>❌</div>
+          <div class='user_list_actions'> ❌ </div>
         </div>
       </div>
       <div v-if="newUser.name" class='user_list local_users'>
-        <div style='color: #ff6666'>{{getUpperCase(newUser.name)}}</div>
-        <div class='user_list_actions' @click.once='modifyLocalStorage(newUser, $event)'>💾</div>
+        <div style='color: #ff6666'>{{ upperCaseFirstLetter(newUser.name) }}</div>
+        <div class='user_list_actions' @click.once='modifyLocalStorage(newUser, $event)'> 💾 </div>
       </div>
       </div>
     </div>
@@ -52,20 +52,19 @@ export default {
       localUsers: []
     }
   },
-  methods: {
-    getUpperCase(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1)
+  computed: {
+    filteredRemoteUsers() {
+      return [...this.remoteUsers].filter(user => user.name.toLowerCase().includes(this.keyword.toLowerCase()))
     },
+    filteredLocalUsers() {
+      return [...this.localUsers].filter(user => user.name.toLowerCase().includes(this.keyword.toLowerCase()))
+    }
+  },
+  methods: {
     async getRemoteUsers() {
       let json = await fetch('https://jsonplaceholder.typicode.com/users')
       let result = await json.json();
       this.remoteUsers = result;
-    },
-    saveToLocalStorage(user) {
-      localStorage.setItem(`User:${user.name}`, JSON.stringify(user))
-      let recentSaved = JSON.parse(localStorage.getItem(`User:${user.name}`))
-      this.localUsers.push(recentSaved);
-      this.newUser = {}
     },
     getFromLocalStorage() {
       let savedUsers = Object.keys(localStorage).reduce((acc, prev) => {
@@ -76,9 +75,12 @@ export default {
       }, []);
       this.localUsers = savedUsers.map(user => JSON.parse(user))
     },
-    modifyLocalStorage(data, e) {
-      if (data.name) {
-        this.saveToLocalStorage(data)
+    modifyLocalStorage(user, e) {
+      if (user.name) {
+        localStorage.setItem(`User:${user.name}`, JSON.stringify(user))
+        let recentSaved = JSON.parse(localStorage.getItem(`User:${user.name}`))
+        this.localUsers.push(recentSaved);
+        this.newUser = {}
       } else {
         // only do this (see below) if the list is supeeer big for optimization (the one below is just for testing purpose)
         // attaching event to every iterated node (similar to saving user) and passing the whole object is less prone to error and...
@@ -88,6 +90,9 @@ export default {
         // Better to search and slice off from array if the list is big rather than calling the function to update as it can be expensive
         this.getFromLocalStorage()
       }
+    },
+    upperCaseFirstLetter(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1)
     }
   }
 }
