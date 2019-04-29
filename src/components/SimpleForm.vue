@@ -4,24 +4,24 @@
     <h1>{{ msg }}</h1>
     <form
       id={form}
-      ref='user_form'
+      ref='applicant_form'
       @submit.prevent='submitForm'
     >
       <div class='form_wrapper'>
         <div class='form_main'>
           <div class='form_input'>
             <span>&ast; Name: </span>
-            <input required v-model='name' placeholder='Your name'>
+            <input required v-model='name' placeholder='Applicant name'>
           </div>
           <div class='form_input'>
             <span>&ast; Age: </span>
-            <input required v-model.number='age' placeholder='Your age' type='number'>
+            <input required v-model.number='age' placeholder='Applicant age' type='number'>
           </div>
           <div class='form_select'>
             <p>&ast; Job: 
               <span>
                 <select required v-model='job'>
-                  <option disabled value=''> Select your job</option>
+                  <option disabled value=''> Select applicant job</option>
                   <option>FrontEnd Development</option>
                   <option>BackEnd Development</option>
                   <option>FullStack Development</option>
@@ -46,22 +46,25 @@
           <div class='form_results'>
             <div>
               <PulseLoader :loading='loading'></PulseLoader>
-              <div v-if='newUser.body'>
-                <div class='user_info'>
-                  <h4>Last added user info:</h4>
-                  <div class='user_info_field'>UserName: <span>{{newUser.name}}</span></div>
-                  <div class='user_info_field'>Age: <span>{{newUser.userId}}</span></div>
-                  <div class='user_info_field'>Job: <span>{{newUser.body}}</span></div>
-                  <div class='user_info_field'>Remote preference: 
+              <div v-if='newApplicant.body'>
+                <div class='applicant_info'>
+                  <h4>Last added applicant info:</h4>
+                  <div class='applicant_info_field'>ApplicantName: <span>{{newApplicant.name}}</span></div>
+                  <div class='applicant_info_field'>Age: <span>{{newApplicant.applicantId}}</span></div>
+                  <div class='applicant_info_field'>Job: <span>{{newApplicant.body}}</span></div>
+                  <div class='applicant_info_field'>Remote preference: 
                     <span>{{this.travel ? this.travel : 'No preference'}}</span>
                   </div>
                 </div>
               </div>
               <div v-else>
-                <span>No new user added 😓</span>
+                <span>No new applicant added 😓</span>
               </div>
-              <div class='users_list'>
-                OR <router-link :to="{name: 'Users', params: { recentUser }}">Check users list</router-link>
+              <div class='applicants_list'>
+                <router-link :to="{name: 'Applicants', params: { recentApplicant }}">
+                  <span style='color: #000'>OR: </span>
+                  <span class='applicant_list_link'> Check recent added applicants list</span>
+                </router-link>
               </div>
             </div>
           </div>
@@ -90,8 +93,8 @@ export default {
       job: '',
       travel: '',
       loading: false,
-      newUser: {},
-      recentUser: {}
+      newApplicant: {},
+      recentApplicant: {}
     }
   },
   methods: {
@@ -100,7 +103,7 @@ export default {
         method: 'post',
         body: JSON.stringify({
           name: this.name,
-          userId: this.age,
+          applicantId: this.age,
           body: this.job
         }),
         headers:{'Content-Type': 'application/json'}
@@ -110,17 +113,17 @@ export default {
         .then(response => response.json())
         .then(json => {
           // Using assign so no null properties are spread over
-          this.newUser = Object.assign({}, json)
-          this.recentUser = Object.assign({}, json)
+          this.newApplicant = Object.assign({}, json)
+          this.recentApplicant = Object.assign({}, json)
         })
         .then(this.startDataRefresh)
     },
     clearForm: function() {
-      this.$refs.user_form.reset();
+      this.$refs.applicant_form.reset();
     },
     startDataRefresh: function() {
       this.loading = false;
-      setTimeout(() => this.newUser = {}, 1500)
+      setTimeout(() => this.newApplicant = {}, 3000)
     }
   }
 }
@@ -154,19 +157,23 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.user_info {
+.applicant_info {
   border: 1px solid #41b883;
   border-radius: 0.5rem;
 }
-.user_info_field {
+.applicant_info_field {
   text-align: left;
   padding: 0.3rem 1rem;
 }
-.user_info_field span {
+.applicant_info_field span {
   font-weight: bold;
 }
-.users_list {
+.applicants_list {
   padding: 2rem 0;
+}
+.applicant_list_link {
+  text-decoration: underline;
+  color: #42b983;
 }
 img {
   height: 20vh;
@@ -212,9 +219,9 @@ ul {
 }
 li {
   display: inline-block;
-  margin: 0 10px;
+  margin: 0 0.5rem;
 }
 a {
-  color: #42b983;
+  text-decoration: none;
 }
 </style>

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router';
 import App from './App.vue'
-import Users from './components/Users.vue'
+import Applicants from './components/Applicants.vue'
 import SimpleForm from './components/SimpleForm'
 
 Vue.config.productionTip = false
@@ -20,9 +20,9 @@ const routes = [
     ]
   },
   {
-    path: '/users',
-    name: 'Users',
-    component: Users,
+    path: '/applicants',
+    name: 'Applicants',
+    component: Applicants,
     props: true
   }
 ]
