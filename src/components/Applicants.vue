@@ -25,13 +25,22 @@
       </div>
       <div v-if="newApplicant.name" class='applicant_list local_applicants'>
         <div style='color: #ff6666'>{{ upperCaseFirstLetter(newApplicant.name) }}</div>
-        <div class='applicant_list_actions' @click.once='modifyLocalStorage(newApplicant, $event)'> 💾 </div>
+        <div class='applicant_list_actions' @click.once='modifyLocalStorage(newApplicant, $event)'>
+          <div v-if='this.saving'>
+            <PulseLoader :loading='saving'></PulseLoader>
+          </div>
+          <div v-else>
+            <span>💾</span>
+          </div>
+        </div>
       </div>
       </div>
     </div>
 </template>
 
 <script>
+import { setTimeout } from 'timers';
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 export default {
   name: 'applicants',
   props: {
@@ -40,6 +49,9 @@ export default {
       default: () => {}
     }
   },
+  components: {
+    PulseLoader
+  },
   created: function() {
     this.getFromLocalStorage();
     this.getRemoteApplicants();
@@ -47,6 +59,7 @@ export default {
   data() {
     return {
       keyword: '',
+      saving: false,
       newApplicant: {...this.recentApplicant} || {},
       remoteApplicants: [],
       localApplicants: []
@@ -77,10 +90,14 @@ export default {
     },
     modifyLocalStorage(applicant, e) {
       if (applicant.name) {
-        localStorage.setItem(`Applicant:${applicant.name}`, JSON.stringify(applicant))
-        let recentSaved = JSON.parse(localStorage.getItem(`Applicant:${applicant.name}`))
-        this.localApplicants.push(recentSaved);
-        this.newApplicant = {}
+        this.saving = true;
+        setTimeout(() => {
+          localStorage.setItem(`Applicant:${applicant.name}`, JSON.stringify(applicant))
+          let recentSaved = JSON.parse(localStorage.getItem(`Applicant:${applicant.name}`))
+          this.localApplicants.push(recentSaved);
+          this.saving = false
+          this.newApplicant = {}
+        }, 2000);
       } else {
         // only do this (see below) if the list is supeeer big for optimization (the one below is just for testing purpose)
         // attaching event to every iterated node (similar to saving applicant) and passing the whole object is less prone to error and...
