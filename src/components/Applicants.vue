@@ -4,8 +4,7 @@
       <div class='menu_content'>
         <router-link :to="{name: 'Home'}"> 🏠 </router-link>
         <div style='padding: 1rem'>
-          <input type="text" v-model='keyword' placeholder='🔍 Search for an applicant'
-            autofocus>
+          <input v-focus type="text" v-model='keyword' placeholder='🔍 Search for an applicant'>
         </div>
       </div>
     </div>
@@ -40,7 +39,8 @@
 
 <script>
 import { setTimeout } from 'timers';
-import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
+import autofocus from '../directives/autofocus';
 export default {
   name: 'applicants',
   props: {
@@ -51,6 +51,9 @@ export default {
   },
   components: {
     PulseLoader
+  },
+  directives: {
+    focus: autofocus
   },
   created: function() {
     this.getFromLocalStorage();
