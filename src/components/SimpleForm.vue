@@ -32,9 +32,9 @@
           <div class='form_radio'>
             <p>Travel for work:&nbsp;
               <span>
-                <label for='travel_yes'>Yes&nbsp;</label>
+                <label for='travel_yes'>Yes</label>
                 <input type='radio' id='travel_yes' value='Yes' v-model='travel'>
-                <label for='travel_no'>No</label>
+                <label for='travel_no'>&nbsp; No</label>
                 <input type='radio' id='travel_no' value='No' v-model='travel'>
               </span>
             </p>

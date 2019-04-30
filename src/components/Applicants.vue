@@ -100,7 +100,7 @@ export default {
           this.localApplicants.push(recentSaved);
           this.saving = false
           this.newApplicant = {}
-        }, 2000);
+        }, 1500);
       } else {
         // only do this (see below) if the list is supeeer big for optimization (the one below is just for testing purpose)
         // attaching event to every iterated node (similar to saving applicant) and passing the whole object is less prone to error and...
@@ -132,9 +132,15 @@ export default {
   input {
     text-align: center;
     height: 1.5rem;
-    width: 12rem;
-    padding: 0.25rem;
+    width: 15rem;
+    padding: 0.4rem;
     font-size: 0.9rem;
+    border-radius: 1rem;
+    border-style: solid;
+    border-color: #ccf;
+  }
+  input:focus {
+    outline: none;
   }
   .applicants {
     display: flex;
