@@ -16,7 +16,7 @@
     </div>
     <h2 v-show='newApplicant.name || filteredLocalApplicant.length'>New applicants</h2>
     <div class='applicants'>
-      <div v-show='filteredLocalApplicant.length' @click.once='modifyLocalStorage({}, $event)'>
+      <div v-show='filteredLocalApplicant.length' @click='modifyLocalStorage({}, $event)'>
         <div class='applicant_list local_applicants' v-for='(applicant, index) in filteredLocalApplicant' :key='applicant.name+index'>
           <div>{{applicant.name}}</div>
           <div class='applicant_list_actions'> ❌ </div>
@@ -24,7 +24,7 @@
       </div>
       <div v-if="newApplicant.name" class='applicant_list local_applicants'>
         <div style='color: #ff6666'>{{ upperCaseFirstLetter(newApplicant.name) }}</div>
-        <div class='applicant_list_actions' @click.once='modifyLocalStorage(newApplicant, $event)'>
+        <div class='applicant_list_actions' @click='modifyLocalStorage(newApplicant, $event)'>
           <div v-if='this.saving'>
             <PulseLoader :loading='saving'></PulseLoader>
           </div>
@@ -100,7 +100,7 @@ export default {
           this.localApplicants.push(recentSaved);
           this.saving = false
           this.newApplicant = {}
-        }, 1500);
+        }, 1000);
       } else {
         // only do this (see below) if the list is supeeer big for optimization (the one below is just for testing purpose)
         // attaching event to every iterated node (similar to saving applicant) and passing the whole object is less prone to error and...
