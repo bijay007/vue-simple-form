@@ -1,29 +1,11 @@
 # A simple vue form to add and modify job applicants
 
-## Project setup
-```
-yarn install
-```
+## You can play with the basic deployed version here :point_right: [Simple Form](https://bijay007.github.io/vue-simple-form/#/ "Click this link to open app")
 
-### Compiles and hot-reloads for development
-```
-yarn run serve
-```
+### Project related setup and compilation scripts
 
-### Compiles and minifies for production
-```
-yarn run build
-```
-
-### Run your tests
-```
-yarn run test
-```
-
-### Lints and fixes files
-```
-yarn run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- Install dependencies: `yarn install`
+- Compilation & hot reloading for development: `yarn run serve`
+- Compilation and minification of bundle for prod: `yarn run build`
+- Run tests: `yarn run test`
+- Lint and fix files: `yarn run lint`
