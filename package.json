@@ -2,7 +2,7 @@
   "name": "vue-simple-form",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://bijay007.github.io/simple-form",
+  "homepage": "https://bijay007.github.io/vue-simple-form",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
