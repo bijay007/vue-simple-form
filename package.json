@@ -2,17 +2,18 @@
   "name": "vue-simple-form",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://bijay007.github.io/vue-simple-form",
+  "homepage": "https://github.com/bijay007/vue-simple-form",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "deploy": "gh-pages -d dist",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "deploy": "node ./node_modules/vue-gh-pages/index.js"
   },
   "dependencies": {
     "core-js": "^2.6.5",
     "gh-pages": "^2.0.1",
     "vue": "^2.6.10",
+    "vue-gh-pages": "^1.19.0",
     "vue-router": "^3.0.6",
     "vue-spinner": "^1.0.3"
   },
