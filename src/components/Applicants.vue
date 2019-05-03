@@ -23,7 +23,7 @@
         </div>
       </div>
       <div v-if="newApplicant.name" class='applicant_list local_applicants'>
-        <div style='color: #ff6666'>{{ upperCaseFirstLetter(newApplicant.name) }}</div>
+        <div style='color: #ff6666'>{{newApplicant.name}}</div>
         <div class='applicant_list_actions' @click='modifyLocalStorage(newApplicant, $event)'>
           <div v-if='this.saving'>
             <PulseLoader :loading='saving'></PulseLoader>
@@ -41,6 +41,8 @@
 import { setTimeout } from 'timers';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 import autofocus from '../directives/autofocus';
+import { getApplicantsFromLocalStorage } from '../common/helpers';
+
 export default {
   name: 'applicants',
   props: {
@@ -56,8 +58,8 @@ export default {
     focus: autofocus
   },
   created: function() {
-    this.getFromLocalStorage();
     this.getRemoteApplicants();
+    this.getFromLocalStorage();
   },
   data() {
     return {
@@ -83,13 +85,7 @@ export default {
       this.remoteApplicants = result;
     },
     getFromLocalStorage() {
-      let savedApplicants = Object.keys(localStorage).reduce((acc, prev) => {
-        if (/Applicant:/.test(prev)) {
-          acc.push(localStorage.getItem(prev))
-        }
-        return acc;
-      }, []);
-      this.localApplicants = savedApplicants.map(applicant => JSON.parse(applicant))
+      this.localApplicants = Array.from(getApplicantsFromLocalStorage());
     },
     modifyLocalStorage(applicant, e) {
       if (applicant.name) {
@@ -110,9 +106,6 @@ export default {
         // Better to search and slice off from array if the list is big rather than calling the function to update as it can be expensive
         this.getFromLocalStorage()
       }
-    },
-    upperCaseFirstLetter(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1)
     }
   }
 }
@@ -155,12 +148,12 @@ export default {
     padding: 0.25rem;
     font-weight: bold;
   }
+  .applicant_list_actions {
+    cursor: pointer;
+  }
   .local_applicants {
     display: flex;
     justify-content: space-between;
-  }
-  .applicant_list_actions {
-    cursor: pointer;
   }
 </style>
 

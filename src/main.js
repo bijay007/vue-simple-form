@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router';
+import VueRouter from 'vue-router'
 import App from './App.vue'
 import Applicants from './components/Applicants.vue'
 import SimpleForm from './components/SimpleForm'
